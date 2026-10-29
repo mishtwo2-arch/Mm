@@ -28,7 +28,9 @@ public class GameView extends View {
         super(context);
 
         platforms = new Platform[] {
-                new Platform(0, 700, 10000, 1000)
+                new Platform(0, 700, 1000, 500),
+                new Platform(1000, 900,700,1000),
+                new Platform(1700, 800, 1000, 500)
         };
     }
 
@@ -75,22 +77,45 @@ public class GameView extends View {
 
         onGround = false;
 
-        for(Platform p : platforms){
+        for(Platform pg : platforms){
             if(
-                playerY+playerRadius >= p.y &&
-                playerY-playerRadius < p.y &&
-                playerX+playerRadius > p.x &&
-                playerX-playerRadius < p.x+p.width
+                playerY+playerRadius >= pg.y &&
+                playerY-playerRadius < pg.y &&
+                playerX+playerRadius > pg.x &&
+                playerX-playerRadius < pg.x+pg.width
             ) {
-                playerY=p.y-playerRadius;
+                playerY=pg.y-playerRadius;
                 onGround=true;
                 postInvalidateOnAnimation();
             }
+        }
+
+        for (Platform pv : platforms) {
+            if (
+                    playerX - playerRadius < pv.x + pv.width &&
+                            playerX - playerRadius > pv.x &&
+                            playerY + playerRadius > pv.y &&
+                            playerY - playerRadius < pv.y + pv.height
+            ) {
+                playerX = pv.x + pv.width + playerRadius;
+            }
+        }
+
+        for (Platform pv : platforms) {
+            if (
+                    playerX + playerRadius > pv.x &&
+                            playerX - playerRadius < pv.x + pv.width &&
+                            playerY + playerRadius > pv.y &&
+                            playerY - playerRadius < pv.y + pv.height
+            ) {
+                playerX = pv.x - playerRadius;
+            }
+        }
 
             if(onGround==false){
                 postInvalidateOnAnimation();
             }
-        }
+
 
 
         paint.setColor(Color.GREEN);
