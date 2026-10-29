@@ -17,8 +17,12 @@ public class GameView extends View {
     private int moveDir = 0;
     private long lastFTime = 0;
     private float playerSpeed = 600;
-    private float fallSpeed = 600;
+    private float fallSpeed = 800;
     private boolean onGround = false;
+    private boolean isJumping = false;
+    private float startJump = 0;
+    private float jumpHeight = 300;
+    private float jumpSpeed = 800;
 
 
 
@@ -30,7 +34,8 @@ public class GameView extends View {
         platforms = new Platform[] {
                 new Platform(0, 700, 1000, 500),
                 new Platform(1000, 900,700,1000),
-                new Platform(1700, 800, 1000, 500)
+                new Platform(1700, 800, 1000, 500),
+                new Platform(0, 300, 200, 200)
         };
     }
 
@@ -54,9 +59,33 @@ public class GameView extends View {
 
                 canvas.drawColor(Color.WHITE);
 
+        if (isJumping){
+            playerY -=jumpSpeed * deltaTime;
+
+            for(Platform p : platforms){
+                if(
+                   playerX + playerRadius > p.x &&
+                   playerX - playerRadius < p.x+p.width &&
+                           playerY - playerRadius < p.y + p.height &&
+                           playerY + playerRadius > p.y + p.height
+                ){
+                    playerY = p.y+p.height+playerRadius;
+                    isJumping = false;
+                }
+            }
+
+            if(playerY <= startJump - jumpHeight){
+                playerY = startJump - jumpHeight;
+                isJumping = false;
+            }
+        }
+        else if(!onGround) {
+            playerY+=fallSpeed*deltaTime;
+        }
+
+
         if (moveDir != 0) {
             playerX += moveDir * playerSpeed * deltaTime;
-
             postInvalidateOnAnimation();
         }
 
@@ -69,10 +98,6 @@ public class GameView extends View {
         }
         if (playerX > getWidth()-playerRadius){
             playerX = getWidth()-playerRadius;
-        }
-
-        if(!onGround) {
-            playerY+=fallSpeed*deltaTime;
         }
 
         onGround = false;
@@ -126,6 +151,14 @@ public class GameView extends View {
 
     }
 
+    public void jump() {
+        if(onGround && !isJumping) {
+            isJumping = true;
+            startJump = playerY;
+            onGround = false;
+        }
+    }
+
     @Override
     public boolean onTouchEvent (MotionEvent event) {
 
@@ -133,10 +166,15 @@ public class GameView extends View {
             case MotionEvent.ACTION_DOWN:
                 lastFTime = System.nanoTime();
 
-                if (event.getX() < getWidth() / 2f) {
+                float third = getWidth() / 3f;
+
+                if (event.getX() < third) {
                     moveDir = -1;
-                } else {
+                } else if (event.getX() < third * 2) {
                     moveDir = 1;
+                }
+                else if (event.getX() < third * 3){
+                    jump();
                 }
                 break;
 
