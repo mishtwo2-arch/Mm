@@ -84,10 +84,12 @@ public class GameView extends View {
         }
 
 
+
         if (moveDir != 0) {
             playerX += moveDir * playerSpeed * deltaTime;
             postInvalidateOnAnimation();
         }
+
 
         for(Platform p : platforms) {
             p.rend(canvas);
@@ -179,10 +181,16 @@ public class GameView extends View {
                 break;
 
             case MotionEvent.ACTION_MOVE:
-                if (event.getX() < getWidth() / 2f) {
+
+                float thirds = getWidth() / 3f;
+
+                if (event.getX() < thirds) {
                     moveDir = -1;
-                } else {
+                } else if (event.getX() < thirds * 2) {
                     moveDir = 1;
+                }
+                else if (event.getX() < thirds * 3){
+                    jump();
                 }
                 break;
 
