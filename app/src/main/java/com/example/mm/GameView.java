@@ -169,20 +169,26 @@ quarter = getWidth() / 4f;
 
         Path  pPath = new Path();
 
-        pPath.moveTo(
-quarter*2-200, 900);
-        pPath.lineTo(
-quarter*2-300, 850);
-        pPath.lineTo(
-quarter*2-550, 850);
-        pPath.lineTo(
-quarter*2-550, 950);
-        pPath.lineTo(
-quarter*2-300, 950);
+        pPath.moveTo(quarter*2-200, 900);
+        pPath.lineTo(quarter*2-300, 850);
+        pPath.lineTo(quarter*2-550, 850);
+        pPath.lineTo(quarter*2-550, 950);
+        pPath.lineTo(quarter*2-300, 950);
         pPath.close();
+
+        Path jPath = new Path();
+
+        jPath.moveTo(quarter*4-350, 950);
+        jPath.lineTo(quarter*4-600, 950);
+        jPath.lineTo(quarter*4-350, 850);
+        jPath.lineTo(quarter*4-100, 950);
+        jPath.close();
+
 
         canvas.drawPath(lPath, buttonPaint);
         canvas.drawPath(pPath, buttonPaint);
+        canvas.drawPath(jPath, buttonPaint);
+
 
         lastFTime = currentTime;
 
