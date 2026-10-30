@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Path;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -23,10 +24,12 @@ public class GameView extends View {
     private float startJump = 0;
     private float jumpHeight = 300;
     private float jumpSpeed = 800;
+    private float third;
 
 
 
     private final Paint paint = new Paint();
+    private final Paint buttonPaint = new Paint();
 
     public GameView(Context context) {
         super(context);
@@ -43,6 +46,8 @@ public class GameView extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
+
+        third = getWidth() / 3f;
 
         long currentTime = System.nanoTime();
 
@@ -149,6 +154,29 @@ public class GameView extends View {
 
         canvas.drawCircle(playerX, playerY, playerRadius, paint);
 
+        buttonPaint.setColor(Color.MAGENTA);
+
+        Path lPath = new Path();
+
+        lPath.moveTo (200, 900);
+        lPath.lineTo(300, 850);
+        lPath.lineTo(600, 850);
+        lPath.lineTo(600, 950);
+        lPath.lineTo(300, 950);
+        lPath.close();
+
+        Path  pPath = new Path();
+
+        pPath.moveTo(third*2-200, 900);
+        pPath.lineTo(third*2-300, 850);
+        pPath.lineTo(third*2-600, 850);
+        pPath.lineTo(third*2-600, 950);
+        pPath.lineTo(third*2-300, 950);
+        pPath.close();
+
+        canvas.drawPath(lPath, buttonPaint);
+        canvas.drawPath(pPath, buttonPaint);
+
         lastFTime = currentTime;
 
     }
@@ -168,8 +196,6 @@ public class GameView extends View {
             case MotionEvent.ACTION_DOWN:
                 lastFTime = System.nanoTime();
 
-                float third = getWidth() / 3f;
-
                 if (event.getX() < third) {
                     moveDir = -1;
                 } else if (event.getX() < third * 2) {
@@ -182,14 +208,13 @@ public class GameView extends View {
 
             case MotionEvent.ACTION_MOVE:
 
-                float thirds = getWidth() / 3f;
 
-                if (event.getX() < thirds) {
+                if (event.getX() < third) {
                     moveDir = -1;
-                } else if (event.getX() < thirds * 2) {
+                } else if (event.getX() < third * 2) {
                     moveDir = 1;
                 }
-                else if (event.getX() < thirds * 3){
+                else if (event.getX() < third * 3){
                     jump();
                 }
                 break;
