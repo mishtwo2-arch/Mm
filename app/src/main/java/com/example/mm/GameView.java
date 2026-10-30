@@ -24,7 +24,8 @@ public class GameView extends View {
     private float startJump = 0;
     private float jumpHeight = 300;
     private float jumpSpeed = 800;
-    private float third;
+    private float 
+quarter;
 
 
 
@@ -47,7 +48,8 @@ public class GameView extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
-        third = getWidth() / 3f;
+        
+quarter = getWidth() / 4f;
 
         long currentTime = System.nanoTime();
 
@@ -160,18 +162,23 @@ public class GameView extends View {
 
         lPath.moveTo (200, 900);
         lPath.lineTo(300, 850);
-        lPath.lineTo(600, 850);
-        lPath.lineTo(600, 950);
+        lPath.lineTo(550, 850);
+        lPath.lineTo(550, 950);
         lPath.lineTo(300, 950);
         lPath.close();
 
         Path  pPath = new Path();
 
-        pPath.moveTo(third*2-200, 900);
-        pPath.lineTo(third*2-300, 850);
-        pPath.lineTo(third*2-600, 850);
-        pPath.lineTo(third*2-600, 950);
-        pPath.lineTo(third*2-300, 950);
+        pPath.moveTo(
+quarter*2-200, 900);
+        pPath.lineTo(
+quarter*2-300, 850);
+        pPath.lineTo(
+quarter*2-550, 850);
+        pPath.lineTo(
+quarter*2-550, 950);
+        pPath.lineTo(
+quarter*2-300, 950);
         pPath.close();
 
         canvas.drawPath(lPath, buttonPaint);
@@ -196,12 +203,15 @@ public class GameView extends View {
             case MotionEvent.ACTION_DOWN:
                 lastFTime = System.nanoTime();
 
-                if (event.getX() < third) {
+                if (event.getX() < 
+quarter) {
                     moveDir = -1;
-                } else if (event.getX() < third * 2) {
+                } else if (event.getX() < 
+quarter * 2) {
                     moveDir = 1;
                 }
-                else if (event.getX() < third * 3){
+                else if (event.getX() < 
+quarter * 4){
                     jump();
                 }
                 break;
@@ -209,12 +219,15 @@ public class GameView extends View {
             case MotionEvent.ACTION_MOVE:
 
 
-                if (event.getX() < third) {
+                if (event.getX() < 
+quarter) {
                     moveDir = -1;
-                } else if (event.getX() < third * 2) {
+                } else if (event.getX() < 
+quarter * 2) {
                     moveDir = 1;
                 }
-                else if (event.getX() < third * 3){
+                else if (event.getX() < 
+quarter * 3){
                     jump();
                 }
                 break;
