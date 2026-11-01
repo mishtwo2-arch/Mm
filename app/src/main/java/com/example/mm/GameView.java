@@ -15,20 +15,22 @@ public class GameView extends View {
     private float playerX = 200;
     private float playerY = 200;
     private float playerRadius = 50;
+
     private int moveDir = 0;
     private long lastFTime = 0;
+
     private float playerSpeed = 600;
-    private float fallSpeed = 800;
+    private float fallSpeed = 0;
+
     private boolean onGround = false;
-    private boolean isJumping = false;
-    private float startJump = 0;
-    private float jumpHeight = 300;
-    private float jumpSpeed = 800;
+
     private float quarter;
+
     private int movePointerId = -1;
     private int jumpPointerId = -1;
 
-
+    private float jumpPower = 1200;
+    private float gravity = 2000;
 
     private final Paint paint = new Paint();
     private final Paint buttonPaint = new Paint();
@@ -38,19 +40,17 @@ public class GameView extends View {
 
         platforms = new Platform[] {
                 new Platform(0, 700, 1000, 500),
-                new Platform(1000, 900,700,1000),
+                new Platform(1000, 900, 700, 1000),
                 new Platform(1700, 800, 1000, 500),
                 new Platform(0, 300, 200, 200)
         };
     }
 
-
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
-        
-quarter = getWidth() / 4f;
+        quarter = getWidth() / 4f;
 
         long currentTime = System.nanoTime();
 
@@ -65,62 +65,56 @@ quarter = getWidth() / 4f;
             deltaTime = 0.016f;
         }
 
-                canvas.drawColor(Color.WHITE);
+        canvas.drawColor(Color.WHITE);
 
-        if (isJumping){
-            playerY -=jumpSpeed * deltaTime;
+        if (!onGround) {
+            fallSpeed += gravity * deltaTime;
+            playerY += fallSpeed * deltaTime;
 
-            for(Platform p : platforms){
-                if(
-                   playerX + playerRadius > p.x &&
-                   playerX - playerRadius < p.x+p.width &&
-                           playerY - playerRadius < p.y + p.height &&
-                           playerY + playerRadius > p.y + p.height
-                ){
-                    playerY = p.y+p.height+playerRadius;
-                    isJumping = false;
+            for (Platform p : platforms) {
+                if (
+                        fallSpeed < 0 &&
+                                playerX + playerRadius > p.x &&
+                                playerX - playerRadius < p.x + p.width &&
+                                playerY - playerRadius < p.y + p.height &&
+                                playerY + playerRadius > p.y + p.height
+                ) {
+                    playerY = p.y + p.height + playerRadius;
+                    fallSpeed = 0;
                 }
             }
-
-            if(playerY <= startJump - jumpHeight){
-                playerY = startJump - jumpHeight;
-                isJumping = false;
-            }
         }
-        else if(!onGround) {
-            playerY+=fallSpeed*deltaTime;
-        }
-
-
 
         if (moveDir != 0) {
             playerX += moveDir * playerSpeed * deltaTime;
             postInvalidateOnAnimation();
         }
 
-
-        for(Platform p : platforms) {
+        for (Platform p : platforms) {
             p.rend(canvas);
         }
 
-        if (playerX < 0+playerRadius) {
-            playerX = 0+playerRadius;
+        if (playerX < playerRadius) {
+            playerX = playerRadius;
         }
-        if (playerX > getWidth()-playerRadius){
-            playerX = getWidth()-playerRadius;
+
+        if (playerX > getWidth() - playerRadius) {
+            playerX = getWidth() - playerRadius;
         }
 
         onGround = false;
 
-        for(Platform pg : platforms){
-            if(
-                playerY+playerRadius >= pg.y &&
-                playerY-playerRadius < pg.y &&
-                playerX+playerRadius > pg.x &&
-                playerX-playerRadius < pg.x+pg.width
+        for (Platform pg : platforms) {
+            if (
+                    fallSpeed >= 0 &&
+                            playerY + playerRadius >= pg.y &&
+                            playerY - playerRadius < pg.y &&
+                            playerX + playerRadius > pg.x &&
+                            playerX - playerRadius < pg.x + pg.width
             ) {
-                playerY=pg.y-playerRadius;
-                onGround=true;
+                playerY = pg.y - playerRadius;
+                fallSpeed = 0;
+                onGround = true;
                 postInvalidateOnAnimation();
             }
         }
@@ -147,69 +141,63 @@ quarter = getWidth() / 4f;
             }
         }
 
-            if(onGround==false){
-                postInvalidateOnAnimation();
-            }
-
-
+        if (!onGround) {
+            postInvalidateOnAnimation();
+        }
 
         paint.setColor(Color.GREEN);
-
         canvas.drawCircle(playerX, playerY, playerRadius, paint);
 
         buttonPaint.setColor(Color.MAGENTA);
 
         Path lPath = new Path();
 
-        lPath.moveTo (200, 900);
+        lPath.moveTo(200, 900);
         lPath.lineTo(300, 850);
         lPath.lineTo(550, 850);
         lPath.lineTo(550, 950);
         lPath.lineTo(300, 950);
         lPath.close();
 
-        Path  pPath = new Path();
+        Path pPath = new Path();
 
-        pPath.moveTo(quarter*2-200, 900);
-        pPath.lineTo(quarter*2-300, 850);
-        pPath.lineTo(quarter*2-550, 850);
-        pPath.lineTo(quarter*2-550, 950);
-        pPath.lineTo(quarter*2-300, 950);
+        pPath.moveTo(quarter * 2 - 200, 900);
+        pPath.lineTo(quarter * 2 - 300, 850);
+        pPath.lineTo(quarter * 2 - 550, 850);
+        pPath.lineTo(quarter * 2 - 550, 950);
+        pPath.lineTo(quarter * 2 - 300, 950);
         pPath.close();
 
         Path jPath = new Path();
 
-        jPath.moveTo(quarter*4-350, 950);
-        jPath.lineTo(quarter*4-600, 950);
-        jPath.lineTo(quarter*4-350, 850);
-        jPath.lineTo(quarter*4-100, 950);
+        jPath.moveTo(quarter * 4 - 350, 950);
+        jPath.lineTo(quarter * 4 - 600, 950);
+        jPath.lineTo(quarter * 4 - 350, 850);
+        jPath.lineTo(quarter * 4 - 100, 950);
         jPath.close();
-
 
         canvas.drawPath(lPath, buttonPaint);
         canvas.drawPath(pPath, buttonPaint);
         canvas.drawPath(jPath, buttonPaint);
 
-
         lastFTime = currentTime;
-
     }
 
     public void jump() {
-        if(onGround && !isJumping) {
-            isJumping = true;
-            startJump = playerY;
+        if (onGround) {
+            fallSpeed = -jumpPower;
             onGround = false;
         }
     }
 
     @Override
-    public boolean onTouchEvent (MotionEvent event) {
+    public boolean onTouchEvent(MotionEvent event) {
 
         int action = event.getActionMasked();
         int index = event.getActionIndex();
 
         switch (action) {
+
             case MotionEvent.ACTION_DOWN:
             case MotionEvent.ACTION_POINTER_DOWN:
 
@@ -237,6 +225,7 @@ quarter = getWidth() / 4f;
                 break;
 
             case MotionEvent.ACTION_MOVE:
+
                 if (movePointerId != -1) {
 
                     int moveIndex = event.findPointerIndex(movePointerId);
@@ -251,10 +240,12 @@ quarter = getWidth() / 4f;
                         }
                     }
                 }
+
                 break;
 
             case MotionEvent.ACTION_UP:
             case MotionEvent.ACTION_POINTER_UP:
+
                 int releasedId = event.getPointerId(index);
 
                 if (releasedId == movePointerId) {
@@ -265,22 +256,22 @@ quarter = getWidth() / 4f;
                 if (releasedId == jumpPointerId) {
                     jumpPointerId = -1;
                 }
+
                 break;
 
             case MotionEvent.ACTION_CANCEL:
+
                 movePointerId = -1;
                 jumpPointerId = -1;
                 moveDir = 0;
+
                 break;
 
             default:
                 break;
-
-
-
         }
+
         postInvalidateOnAnimation();
         return true;
-
     }
 }

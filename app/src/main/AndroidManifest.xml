@@ -13,6 +13,9 @@
         android:theme="@style/Theme.Mm">
         <activity
             android:name=".MainActivity"
+
+            android:screenOrientation="landscape"
+
             android:exported="true"
             android:windowSoftInputMode="adjustResize">
             <intent-filter>
