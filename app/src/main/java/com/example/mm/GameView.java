@@ -1,3 +1,4 @@
+
 package com.example.mm;
 
 import android.content.Context;
@@ -10,29 +11,17 @@ import android.view.View;
 
 public class GameView extends View {
 
+    private Player player = new Player();
+
     private final Platform[] platforms;
 
-    private float playerX = 200;
-    private float playerY = 200;
-    private float playerRadius = 50;
-
-    private int moveDir = 0;
     private long lastFTime = 0;
-
-    private float playerSpeed = 600;
-    private float fallSpeed = 0;
-
-    private boolean onGround = false;
 
     private float quarter;
 
     private int movePointerId = -1;
     private int jumpPointerId = -1;
 
-    private float jumpPower = 1200;
-    private float gravity = 2000;
-
-    private final Paint paint = new Paint();
     private final Paint buttonPaint = new Paint();
 
     public GameView(Context context) {
@@ -67,86 +56,11 @@ public class GameView extends View {
 
         canvas.drawColor(Color.WHITE);
 
-        if (!onGround) {
-            fallSpeed += gravity * deltaTime;
-            playerY += fallSpeed * deltaTime;
-
-            for (Platform p : platforms) {
-                if (
-                        fallSpeed < 0 &&
-                                playerX + playerRadius > p.x &&
-                                playerX - playerRadius < p.x + p.width &&
-                                playerY - playerRadius < p.y + p.height &&
-                                playerY + playerRadius > p.y + p.height
-                ) {
-                    playerY = p.y + p.height + playerRadius;
-                    fallSpeed = 0;
-                }
-            }
-        }
-
-        if (moveDir != 0) {
-            playerX += moveDir * playerSpeed * deltaTime;
-            postInvalidateOnAnimation();
-        }
+        player.update(deltaTime, platforms, getWidth());
 
         for (Platform p : platforms) {
             p.rend(canvas);
         }
-
-        if (playerX < playerRadius) {
-            playerX = playerRadius;
-        }
-
-        if (playerX > getWidth() - playerRadius) {
-            playerX = getWidth() - playerRadius;
-        }
-
-        onGround = false;
-
-        for (Platform pg : platforms) {
-            if (
-                    fallSpeed >= 0 &&
-                            playerY + playerRadius >= pg.y &&
-                            playerY - playerRadius < pg.y &&
-                            playerX + playerRadius > pg.x &&
-                            playerX - playerRadius < pg.x + pg.width
-            ) {
-                playerY = pg.y - playerRadius;
-                fallSpeed = 0;
-                onGround = true;
-                postInvalidateOnAnimation();
-            }
-        }
-
-        for (Platform pv : platforms) {
-            if (
-                    playerX - playerRadius < pv.x + pv.width &&
-                            playerX - playerRadius > pv.x &&
-                            playerY + playerRadius > pv.y &&
-                            playerY - playerRadius < pv.y + pv.height
-            ) {
-                playerX = pv.x + pv.width + playerRadius;
-            }
-        }
-
-        for (Platform pv : platforms) {
-            if (
-                    playerX + playerRadius > pv.x &&
-                            playerX - playerRadius < pv.x + pv.width &&
-                            playerY + playerRadius > pv.y &&
-                            playerY - playerRadius < pv.y + pv.height
-            ) {
-                playerX = pv.x - playerRadius;
-            }
-        }
-
-        if (!onGround) {
-            postInvalidateOnAnimation();
-        }
-
-        paint.setColor(Color.GREEN);
-        canvas.drawCircle(playerX, playerY, playerRadius, paint);
 
         buttonPaint.setColor(Color.MAGENTA);
 
@@ -168,6 +82,8 @@ public class GameView extends View {
         pPath.lineTo(quarter * 2 - 300, 950);
         pPath.close();
 
+        player.draw(canvas);
+
         Path jPath = new Path();
 
         jPath.moveTo(quarter * 4 - 350, 950);
@@ -181,13 +97,7 @@ public class GameView extends View {
         canvas.drawPath(jPath, buttonPaint);
 
         lastFTime = currentTime;
-    }
-
-    public void jump() {
-        if (onGround) {
-            fallSpeed = -jumpPower;
-            onGround = false;
-        }
+        postInvalidateOnAnimation();
     }
 
     @Override
@@ -211,16 +121,21 @@ public class GameView extends View {
                     movePointerId = id;
 
                     if (x < quarter) {
-                        moveDir = -1;
+                        player.moveDir = -1;
                     } else {
-                        moveDir = 1;
+                        player.moveDir = 1;
                     }
+
                 }
 
                 if (x >= quarter * 2 && jumpPointerId == -1) {
                     jumpPointerId = id;
-                    jump();
+
+                    player.jump();
+
                 }
+
+
 
                 break;
 
@@ -234,9 +149,9 @@ public class GameView extends View {
                         float moveX = event.getX(moveIndex);
 
                         if (moveX < quarter) {
-                            moveDir = -1;
+                            player.moveDir = -1;
                         } else if (moveX < quarter * 2) {
-                            moveDir = 1;
+                            player.moveDir = 1;
                         }
                     }
                 }
@@ -250,11 +165,13 @@ public class GameView extends View {
 
                 if (releasedId == movePointerId) {
                     movePointerId = -1;
-                    moveDir = 0;
+
+                    player.moveDir = 0;
                 }
 
                 if (releasedId == jumpPointerId) {
                     jumpPointerId = -1;
+
                 }
 
                 break;
@@ -263,7 +180,8 @@ public class GameView extends View {
 
                 movePointerId = -1;
                 jumpPointerId = -1;
-                moveDir = 0;
+
+                player.moveDir = 0;
 
                 break;
 
