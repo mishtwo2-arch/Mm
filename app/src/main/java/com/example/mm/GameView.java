@@ -11,6 +11,7 @@ import android.view.View;
 public class GameView extends View {
 
     private Player player = new Player();
+    private Touch touch;
 
     private final Platform[] platforms;
 
@@ -18,11 +19,13 @@ public class GameView extends View {
 
     private float quarter;
 
-    private int movePointerId = -1;
-    private int jumpPointerId = -1;
     private TestLevel testLevel;
 
     private final Paint buttonPaint = new Paint();
+
+    public void resetFrameTime() {
+        lastFTime = System.nanoTime();
+    }
 
     public GameView(Context context) {
         super(context);
@@ -30,6 +33,8 @@ public class GameView extends View {
         testLevel = new TestLevel();
 
         platforms = testLevel.platforms;
+
+        touch = new Touch(this, player);
     }
 
     @Override
@@ -100,91 +105,8 @@ public class GameView extends View {
     @Override
     public boolean onTouchEvent(MotionEvent event) {
 
-        int action = event.getActionMasked();
-        int index = event.getActionIndex();
-
-        switch (action) {
-
-            case MotionEvent.ACTION_DOWN:
-            case MotionEvent.ACTION_POINTER_DOWN:
-
-                float x = event.getX(index);
-                int id = event.getPointerId(index);
-
-                lastFTime = System.nanoTime();
-
-                if (x < quarter * 2 && movePointerId == -1) {
-
-                    movePointerId = id;
-
-                    if (x < quarter) {
-                        player.moveDir = -1;
-                    } else {
-                        player.moveDir = 1;
-                    }
-
-                }
-
-                if (x >= quarter * 2 && jumpPointerId == -1) {
-                    jumpPointerId = id;
-
-                    player.jump();
-
-                }
-
-                break;
-
-            case MotionEvent.ACTION_MOVE:
-
-                if (movePointerId != -1) {
-
-                    int moveIndex = event.findPointerIndex(movePointerId);
-
-                    if (moveIndex != -1) {
-                        float moveX = event.getX(moveIndex);
-
-                        if (moveX < quarter) {
-                            player.moveDir = -1;
-                        } else if (moveX < quarter * 2) {
-                            player.moveDir = 1;
-                        }
-                    }
-                }
-
-                break;
-
-            case MotionEvent.ACTION_UP:
-            case MotionEvent.ACTION_POINTER_UP:
-
-                int releasedId = event.getPointerId(index);
-
-                if (releasedId == movePointerId) {
-                    movePointerId = -1;
-
-                    player.moveDir = 0;
-                }
-
-                if (releasedId == jumpPointerId) {
-                    jumpPointerId = -1;
-
-                }
-
-                break;
-
-            case MotionEvent.ACTION_CANCEL:
-
-                movePointerId = -1;
-                jumpPointerId = -1;
-
-                player.moveDir = 0;
-
-                break;
-
-            default:
-                break;
-        }
-
         postInvalidateOnAnimation();
-        return true;
+
+        return touch.onTouchEvent(event, quarter);
     }
 }
