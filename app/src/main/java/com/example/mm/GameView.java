@@ -1,4 +1,3 @@
-
 package com.example.mm;
 
 import android.content.Context;
@@ -21,18 +20,16 @@ public class GameView extends View {
 
     private int movePointerId = -1;
     private int jumpPointerId = -1;
+    private TestLevel testLevel;
 
     private final Paint buttonPaint = new Paint();
 
     public GameView(Context context) {
         super(context);
 
-        platforms = new Platform[] {
-                new Platform(0, 700, 1000, 500),
-                new Platform(1000, 900, 700, 1000),
-                new Platform(1700, 800, 1000, 500),
-                new Platform(0, 300, 200, 200)
-        };
+        testLevel = new TestLevel();
+
+        platforms = testLevel.platforms;
     }
 
     @Override
@@ -134,8 +131,6 @@ public class GameView extends View {
                     player.jump();
 
                 }
-
-
 
                 break;
 
