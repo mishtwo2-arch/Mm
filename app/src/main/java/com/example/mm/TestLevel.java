@@ -1,6 +1,7 @@
 package com.example.mm;
 
 public class TestLevel {
+    public Boolean button = true;
     public final Platform[] platforms;
     public TestLevel() {
 

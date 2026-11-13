@@ -18,10 +18,12 @@ public class GameView extends View {
     private long lastFTime = 0;
 
     private float quarter;
+    private boolean buttonBoolean;
 
     private TestLevel testLevel;
 
     private final Paint buttonPaint = new Paint();
+
 
     public void resetFrameTime() {
         lastFTime = System.nanoTime();
@@ -40,6 +42,10 @@ public class GameView extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
+
+        testLevel= new TestLevel();
+
+        buttonBoolean = testLevel.button;
 
         quarter = getWidth() / 4f;
 
@@ -66,37 +72,40 @@ public class GameView extends View {
 
         buttonPaint.setColor(Color.MAGENTA);
 
-        Path lPath = new Path();
+        if (buttonBoolean == true) {
 
-        lPath.moveTo(200, 900);
-        lPath.lineTo(300, 850);
-        lPath.lineTo(550, 850);
-        lPath.lineTo(550, 950);
-        lPath.lineTo(300, 950);
-        lPath.close();
+            Path lPath = new Path();
 
-        Path pPath = new Path();
+            lPath.moveTo(200, 900);
+            lPath.lineTo(300, 850);
+            lPath.lineTo(550, 850);
+            lPath.lineTo(550, 950);
+            lPath.lineTo(300, 950);
+            lPath.close();
 
-        pPath.moveTo(quarter * 2 - 200, 900);
-        pPath.lineTo(quarter * 2 - 300, 850);
-        pPath.lineTo(quarter * 2 - 550, 850);
-        pPath.lineTo(quarter * 2 - 550, 950);
-        pPath.lineTo(quarter * 2 - 300, 950);
-        pPath.close();
+            Path pPath = new Path();
+
+            pPath.moveTo(quarter * 2 - 200, 900);
+            pPath.lineTo(quarter * 2 - 300, 850);
+            pPath.lineTo(quarter * 2 - 550, 850);
+            pPath.lineTo(quarter * 2 - 550, 950);
+            pPath.lineTo(quarter * 2 - 300, 950);
+            pPath.close();
+
+            Path jPath = new Path();
+
+            jPath.moveTo(quarter * 4 - 350, 950);
+            jPath.lineTo(quarter * 4 - 600, 950);
+            jPath.lineTo(quarter * 4 - 350, 850);
+            jPath.lineTo(quarter * 4 - 100, 950);
+            jPath.close();
+
+            canvas.drawPath(lPath, buttonPaint);
+            canvas.drawPath(pPath, buttonPaint);
+            canvas.drawPath(jPath, buttonPaint);
+        }
 
         player.draw(canvas);
-
-        Path jPath = new Path();
-
-        jPath.moveTo(quarter * 4 - 350, 950);
-        jPath.lineTo(quarter * 4 - 600, 950);
-        jPath.lineTo(quarter * 4 - 350, 850);
-        jPath.lineTo(quarter * 4 - 100, 950);
-        jPath.close();
-
-        canvas.drawPath(lPath, buttonPaint);
-        canvas.drawPath(pPath, buttonPaint);
-        canvas.drawPath(jPath, buttonPaint);
 
         lastFTime = currentTime;
         postInvalidateOnAnimation();
