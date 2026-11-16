@@ -13,14 +13,14 @@ public class GameView extends View {
     private Player player = new Player();
     private Touch touch;
 
-    private final Platform[] platforms;
-
     private long lastFTime = 0;
 
     private float quarter;
     private boolean buttonBoolean;
+    int levelNum = 101;
 
     private TestLevel testLevel;
+    private Level currentLevel;
 
     private final Paint buttonPaint = new Paint();
 
@@ -34,7 +34,7 @@ public class GameView extends View {
 
         testLevel = new TestLevel();
 
-        platforms = testLevel.platforms;
+        changeLevel(levelNum);
 
         touch = new Touch(this, player);
     }
@@ -42,8 +42,6 @@ public class GameView extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-
-        testLevel= new TestLevel();
 
         buttonBoolean = testLevel.button;
 
@@ -64,9 +62,9 @@ public class GameView extends View {
 
         canvas.drawColor(Color.WHITE);
 
-        player.update(deltaTime, platforms, getWidth());
+        player.update(deltaTime, currentLevel.platforms, getWidth());
 
-        for (Platform p : platforms) {
+        for (Platform p : currentLevel.platforms) {
             p.rend(canvas);
         }
 
@@ -118,4 +116,20 @@ public class GameView extends View {
 
         return touch.onTouchEvent(event, quarter);
     }
+
+    public void changeLevel(int newLevelNum) {
+
+        if (newLevelNum == 101) {
+            currentLevel = new OneLevel();
+        } else if (newLevelNum == 102) {
+            currentLevel = new TwoLevel();
+        } else {
+            return;
+        }
+
+        levelNum = newLevelNum;
+
+        postInvalidateOnAnimation();
+    }
+
 }

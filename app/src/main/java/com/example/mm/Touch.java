@@ -32,8 +32,10 @@ public class Touch {
 
                     if (x < quarter) {
                         player.moveDir = -1;
+                        gameView.changeLevel(101);
                     } else {
                         player.moveDir = 1;
+                        gameView.changeLevel(102);
                     }
 
                 }
