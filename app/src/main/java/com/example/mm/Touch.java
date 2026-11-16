@@ -60,8 +60,10 @@ public class Touch {
 
                         if (moveX < quarter) {
                             player.moveDir = -1;
+                            gameView.changeLevel(101);
                         } else if (moveX < quarter * 2) {
                             player.moveDir = 1;
+                            gameView.changeLevel(102);
                         }
                     }
                 }
