@@ -12,18 +12,19 @@ public class MineMenu extends Level{
         this.gameView = gameView;
     }
         @Override
-        public void draw(Canvas canvas) {
+        public void draw(Canvas canvas, float quarter) {
             paint.setColor(Color.GREEN);
-            canvas.drawRect(200, 300, 600, 450, paint);
+            canvas.drawRect(quarter, 300, quarter * 3, 450, paint);
 
             paint.setColor(Color.WHITE);
-            paint.setTextSize(50);
-            canvas.drawText("Играть", 300, 390, paint);
+            paint.setTextAlign(Paint.Align.CENTER);
+            paint.setTextSize(100);
+            canvas.drawText("Играть", quarter*2, 390, paint);
         }
 
         @Override
-        public void onTouch(float x, float y) {
-            if (x >= 200 && x <= 600 &&
+        public void onTouch(float x, float y, float quarter) {
+            if (x >= quarter && x <= quarter*3 &&
                     y >= 300 && y <= 450) {
 
                 gameView.changeLevel(101);

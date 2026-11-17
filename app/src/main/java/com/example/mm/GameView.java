@@ -62,7 +62,7 @@ public class GameView extends View {
 
         canvas.drawColor(Color.WHITE);
 
-        currentLevel.draw(canvas);
+        currentLevel.draw(canvas, quarter);
 
         if (levelNum != 100) {
             player.update(deltaTime, currentLevel.platforms, getWidth());
@@ -118,7 +118,7 @@ public class GameView extends View {
 
         if (levelNum == 100) {
             if (event.getActionMasked() == MotionEvent.ACTION_DOWN) {
-                currentLevel.onTouch(event.getX(), event.getY());
+                currentLevel.onTouch(event.getX(), event.getY(), quarter);
             }
             return true;
         }
