@@ -26,7 +26,6 @@ public class MineMenu extends Level{
         public void onTouch(float x, float y, float quarter) {
             if (x >= quarter && x <= quarter*3 &&
                     y >= 300 && y <= 450) {
-
                 gameView.changeLevel(101);
             }
         }

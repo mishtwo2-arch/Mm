@@ -4,10 +4,10 @@ import android.view.MotionEvent;
 
 public class Touch {
 
-    private Player player = new Player();
-    private GameView gameView;
-    private int movePointerId = -1;
-    private int jumpPointerId = -1;
+    protected Player player = new Player();
+    protected GameView gameView;
+    protected int movePointerId = -1;
+    protected int jumpPointerId = -1;
     public Touch(GameView gameView, Player player){
         this.player = player;
         this.gameView = gameView;
@@ -32,10 +32,8 @@ public class Touch {
 
                     if (x < quarter) {
                         player.moveDir = -1;
-                        gameView.changeLevel(101);
                     } else {
                         player.moveDir = 1;
-                        gameView.changeLevel(102);
                     }
 
                 }
@@ -60,10 +58,8 @@ public class Touch {
 
                         if (moveX < quarter) {
                             player.moveDir = -1;
-                            gameView.changeLevel(101);
                         } else if (moveX < quarter * 2) {
                             player.moveDir = 1;
-                            gameView.changeLevel(102);
                         }
                     }
                 }
