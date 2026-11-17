@@ -121,6 +121,21 @@ public class GameView extends View {
             return true;
         }
 
+        if (levelNum >= 100 &&
+                event.getActionMasked() == MotionEvent.ACTION_DOWN) {
+
+            float x = event.getX();
+            float y = event.getY();
+
+            if (x >= quarter * 4 - 200 &&
+                    x <= quarter * 4 - 100 &&
+                    y >= 100 && y <= 200) {
+
+                exitLevel();
+                return true;
+            }
+        }
+
         return touch.onTouchEvent(event, quarter);
     }
 

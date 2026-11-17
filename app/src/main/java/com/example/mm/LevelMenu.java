@@ -13,6 +13,7 @@ public class LevelMenu extends Level{
     }
     @Override
     public void draw(Canvas canvas, float quarter) {
+
         paint.setColor(Color.GREEN);
         canvas.drawRect(100, 200, quarter * 2 - 100, 600, paint);
         canvas.drawRect(quarter*2 +100, 200, quarter*4-100, 600, paint);
