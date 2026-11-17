@@ -14,12 +14,12 @@ public class MineMenu extends Level{
         @Override
         public void draw(Canvas canvas, float quarter) {
             paint.setColor(Color.GREEN);
-            canvas.drawRect(quarter, 300, quarter * 3, 450, paint);
+            canvas.drawRect(quarter, 300, quarter * 3, 550, paint);
 
             paint.setColor(Color.WHITE);
             paint.setTextAlign(Paint.Align.CENTER);
-            paint.setTextSize(100);
-            canvas.drawText("Играть", quarter*2, 390, paint);
+            paint.setTextSize(150);
+            canvas.drawText("Играть", quarter*2, 460, paint);
         }
 
         @Override
