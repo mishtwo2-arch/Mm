@@ -17,7 +17,7 @@ public class GameView extends View {
 
     private float quarter;
     private boolean buttonBoolean;
-    int levelNum = 101;
+    int levelNum = 100;
 
     private TestLevel testLevel;
     private Level currentLevel;
@@ -62,15 +62,21 @@ public class GameView extends View {
 
         canvas.drawColor(Color.WHITE);
 
-        player.update(deltaTime, currentLevel.platforms, getWidth());
+        currentLevel.draw(canvas);
 
-        for (Platform p : currentLevel.platforms) {
-            p.rend(canvas);
+        if (levelNum != 100) {
+            player.update(deltaTime, currentLevel.platforms, getWidth());
+
+            for (Platform p : currentLevel.platforms) {
+                p.rend(canvas);
+            }
+
+            player.draw(canvas);
         }
 
         buttonPaint.setColor(Color.MAGENTA);
 
-        if (buttonBoolean == true) {
+        if (buttonBoolean && levelNum != 100) {
 
             Path lPath = new Path();
 
@@ -103,8 +109,6 @@ public class GameView extends View {
             canvas.drawPath(jPath, buttonPaint);
         }
 
-        player.draw(canvas);
-
         lastFTime = currentTime;
         postInvalidateOnAnimation();
     }
@@ -112,14 +116,21 @@ public class GameView extends View {
     @Override
     public boolean onTouchEvent(MotionEvent event) {
 
-        postInvalidateOnAnimation();
+        if (levelNum == 100) {
+            if (event.getActionMasked() == MotionEvent.ACTION_DOWN) {
+                currentLevel.onTouch(event.getX(), event.getY());
+            }
+            return true;
+        }
 
         return touch.onTouchEvent(event, quarter);
     }
 
     public void changeLevel(int newLevelNum) {
-
-        if (newLevelNum == 101) {
+        if (newLevelNum == 100){
+            currentLevel = new MineMenu(this);
+        }
+        else if (newLevelNum == 101) {
             currentLevel = new OneLevel();
         } else if (newLevelNum == 102) {
             currentLevel = new TwoLevel();
@@ -130,6 +141,10 @@ public class GameView extends View {
         levelNum = newLevelNum;
 
         postInvalidateOnAnimation();
+    }
+
+    public void exitLevel() {
+        changeLevel(102);
     }
 
 }

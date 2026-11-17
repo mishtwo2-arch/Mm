@@ -2,7 +2,9 @@ package com.example.mm;
 
 public class OneLevel extends Level {
     public Boolean button = true;
+    private GameView gameView;
     public OneLevel() {
+        this.gameView = gameView;
 
         platforms = new Platform[]{
                 new Platform(0, 700, 1000, 500),
