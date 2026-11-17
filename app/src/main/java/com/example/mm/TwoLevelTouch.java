@@ -2,9 +2,9 @@ package com.example.mm;
 
 import android.view.MotionEvent;
 
-public class OneLevelTouch extends Touch {
+public class TwoLevelTouch extends Touch {
 
-    public OneLevelTouch(GameView gameView, Player player) {
+    public TwoLevelTouch(GameView gameView, Player player) {
         super(gameView, player);
     }
 

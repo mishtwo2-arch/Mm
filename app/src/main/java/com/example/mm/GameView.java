@@ -17,7 +17,7 @@ public class GameView extends View {
 
     private float quarter;
     private boolean buttonBoolean;
-    int levelNum = 100;
+    int levelNum = 0;
 
     private TestLevel testLevel;
     private Level currentLevel;
@@ -35,8 +35,6 @@ public class GameView extends View {
         testLevel = new TestLevel();
 
         changeLevel(levelNum);
-
-        touch = new Touch(this, player);
     }
 
     @Override
@@ -64,7 +62,7 @@ public class GameView extends View {
 
         currentLevel.draw(canvas, quarter);
 
-        if (levelNum != 0) {
+        if (levelNum >= 100) {
             player.update(deltaTime, currentLevel.platforms, getWidth());
 
             for (Platform p : currentLevel.platforms) {
@@ -76,7 +74,7 @@ public class GameView extends View {
 
         buttonPaint.setColor(Color.MAGENTA);
 
-        if (buttonBoolean && levelNum != 0) {
+        if (buttonBoolean && levelNum >= 100) {
 
             Path lPath = new Path();
 
@@ -116,7 +114,7 @@ public class GameView extends View {
     @Override
     public boolean onTouchEvent(MotionEvent event) {
 
-        if (levelNum == 0) {
+        if (levelNum == 0 || levelNum == 1) {
             if (event.getActionMasked() == MotionEvent.ACTION_DOWN) {
                 currentLevel.onTouch(event.getX(), event.getY(), quarter);
             }
@@ -129,6 +127,8 @@ public class GameView extends View {
     public void changeLevel(int newLevelNum) {
         if (newLevelNum == 0){
             currentLevel = new MineMenu(this);
+        } else if (newLevelNum==1) {
+            currentLevel = new LevelMenu(this);
         } else if (newLevelNum==100) {
             currentLevel = new ZeroLevel();
         } else if (newLevelNum == 101) {
@@ -140,12 +140,19 @@ public class GameView extends View {
         }
 
         levelNum = newLevelNum;
-
         postInvalidateOnAnimation();
+
+        if (newLevelNum == 102 || newLevelNum == 101) {
+            if (!(touch instanceof TwoLevelTouch)) {
+                touch = new TwoLevelTouch(this, player);
+            }
+        } else {
+            touch = new Touch(this, player);
+        }
     }
 
     public void exitLevel() {
-        changeLevel(102);
+        changeLevel(0);
     }
 
 }
