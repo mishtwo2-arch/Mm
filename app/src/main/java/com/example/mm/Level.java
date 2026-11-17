@@ -23,17 +23,14 @@ public class Level {
         paint.setStrokeWidth(8);
         paint.setStrokeCap(Paint.Cap.ROUND);
 
-        // Положение кнопки
         float right = quarter * 4 - 50;
         float top = 50;
         float left = right - 100;
 
-        // Дверь
         canvas.drawLine(left + 60, top + 20, left + 80, top + 20, paint);
         canvas.drawLine(left + 80, top + 20, left + 80, top + 80, paint);
         canvas.drawLine(left + 80, top + 80, left + 60, top + 80, paint);
 
-        // Стрелка влево
         canvas.drawLine(left + 65, top + 50, left + 15, top + 50, paint);
         canvas.drawLine(left + 15, top + 50, left + 30, top + 35, paint);
         canvas.drawLine(left + 15, top + 50, left + 30, top + 65, paint);
