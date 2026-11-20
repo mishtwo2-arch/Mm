@@ -10,7 +10,7 @@ public class OneLevel extends Level {
                 new Platform(0, 700, 1000, 500),
                 new Platform(1000, 900, 700, 1000),
                 new Platform(1700, 800, 1000, 500),
-                new Platform(0, 300, 2000, 200)
+                new Platform(0, 300, 1700, 200)
         };
     }
 }
