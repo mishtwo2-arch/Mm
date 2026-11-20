@@ -3,6 +3,7 @@ package com.example.mm;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.view.MotionEvent;
@@ -134,29 +135,50 @@ public class GameView extends View {
     @Override
     public boolean onTouchEvent(MotionEvent event) {
 
-        if (levelNum == 0 || levelNum == 1) {
-            if (event.getActionMasked() == MotionEvent.ACTION_DOWN) {
-                currentLevel.onTouch(event.getX(), event.getY(), quarter);
-            }
+        if (scale <= 0f) {
             return true;
         }
 
-        if (levelNum >= 100 &&
-                event.getActionMasked() == MotionEvent.ACTION_DOWN) {
+        Matrix matrix = new Matrix();
+        matrix.setTranslate(-offsetX, -offsetY);
+        matrix.postScale(1f / scale, 1f / scale);
 
-            float x = event.getX();
-            float y = event.getY();
+        MotionEvent gameEvent = MotionEvent.obtain(event);
+        gameEvent.transform(matrix);
 
-            if (x >= quarter * 4 - 150 &&
-                    x <= quarter * 4 - 50 &&
-                    y >= 50 && y <= 150) {
+        try {
 
-                exitLevel();
+            if (levelNum == 0 || levelNum == 1) {
+                if (gameEvent.getActionMasked() == MotionEvent.ACTION_DOWN) {
+                    currentLevel.onTouch(
+                            gameEvent.getX(),
+                            gameEvent.getY(),
+                            quarter
+                    );
+                }
                 return true;
             }
-        }
 
-        return touch.onTouchEvent(event, quarter);
+            if (levelNum >= 100 &&
+                    gameEvent.getActionMasked() == MotionEvent.ACTION_DOWN) {
+
+                float x = gameEvent.getX();
+                float y = gameEvent.getY();
+
+                if (x >= quarter * 4 - 150 &&
+                        x <= quarter * 4 - 50 &&
+                        y >= 50 && y <= 150) {
+
+                    exitLevel();
+                    return true;
+                }
+            }
+
+            return touch.onTouchEvent(gameEvent, quarter);
+
+        } finally {
+            gameEvent.recycle();
+        }
     }
 
     public void changeLevel(int newLevelNum) {
