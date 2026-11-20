@@ -97,8 +97,9 @@ public class Player {
                 playerX = pv.x - playerRadius;
             }
         }
-
-
-
+    }
+    public void resetPosition() {
+        playerX = 200;
+        playerY = 200;
     }
 }

@@ -127,9 +127,9 @@ public class GameView extends View {
             float x = event.getX();
             float y = event.getY();
 
-            if (x >= quarter * 4 - 200 &&
-                    x <= quarter * 4 - 100 &&
-                    y >= 100 && y <= 200) {
+            if (x >= quarter * 4 - 150 &&
+                    x <= quarter * 4 - 50 &&
+                    y >= 50 && y <= 150) {
 
                 exitLevel();
                 return true;
@@ -168,6 +168,7 @@ public class GameView extends View {
 
     public void exitLevel() {
         changeLevel(0);
+        player.resetPosition();
     }
 
 }
