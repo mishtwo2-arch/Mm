@@ -10,6 +10,13 @@ import android.view.View;
 
 public class GameView extends View {
 
+    private static final float GAME_WIDTH = 1920f;
+    private static final float GAME_HEIGHT = 1080f;
+    private float scale;
+    private float offsetX;
+    private float offsetY;
+
+
     private Player player = new Player();
     private Touch touch;
 
@@ -41,9 +48,20 @@ public class GameView extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
+        updateScale();
+
+        canvas.drawColor(Color.LTGRAY);
+
+        canvas.save();
+
+        canvas.translate(offsetX, offsetY);
+        canvas.scale(scale, scale);
+
+        canvas.clipRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
+
         buttonBoolean = testLevel.button;
 
-        quarter = getWidth() / 4f;
+        quarter = GAME_WIDTH / 4f;
 
         long currentTime = System.nanoTime();
 
@@ -63,7 +81,7 @@ public class GameView extends View {
         currentLevel.draw(canvas, quarter);
 
         if (levelNum >= 100) {
-            player.update(deltaTime, currentLevel.platforms, getWidth());
+            player.update(deltaTime, currentLevel.platforms, GAME_WIDTH);
 
             for (Platform p : currentLevel.platforms) {
                 p.rend(canvas);
@@ -106,6 +124,8 @@ public class GameView extends View {
             canvas.drawPath(pPath, buttonPaint);
             canvas.drawPath(jPath, buttonPaint);
         }
+
+        canvas.restore();
 
         lastFTime = currentTime;
         postInvalidateOnAnimation();
@@ -171,4 +191,14 @@ public class GameView extends View {
         player.resetPosition();
     }
 
+    private void updateScale() {
+     float scaleX = getWidth() / GAME_WIDTH;
+     float scaleY = getHeight() / GAME_HEIGHT;
+
+     scale = Math.min(scaleX, scaleY);
+
+     offsetX = (getWidth() - GAME_WIDTH*scale)/2f;
+     offsetY = (getHeight() - GAME_HEIGHT*scale)/2f;
+
+    }
 }
